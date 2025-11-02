@@ -1,0 +1,84 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - GameZ</title>
+    <link rel="stylesheet" href="checkout.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="checkout-container">
+        <h1>Checkout</h1>
+
+       
+        <p><strong>Game:</strong> <span id="gameName"></span></p>
+        <p><strong>Price:</strong> ₹<span id="gamePrice"></span></p>
+
+        
+        <div id="qrcode-container" style="margin-top:20px; text-align:center;">
+            <h2>Scan to Pay</h2>
+            <canvas id="qrcode"></canvas>
+        </div>
+
+       
+        <div style="text-align:center; margin-top:20px;">
+            <button id="confirmPaymentBtn">I Have Paid</button>
+            <p id="paymentStatus" style="color:green; font-weight:bold; display:none;">
+                ✅ Payment Successful! Thank you for your purchase.
+            </p>
+            <button id="downloadReceiptBtn" style="display:none; margin-top:10px;">
+                Download Receipt
+            </button>
+        </div>
+    </div>
+
+    <script>
+       
+        const params = new URLSearchParams(window.location.search);
+        const game = params.get("game");
+        const price = params.get("price");
+
+        
+        document.getElementById("gameName").textContent = game || "Not Selected";
+        document.getElementById("gamePrice").textContent = price || "0";
+
+        
+        const upiID = "8980577584@upi"; 
+        const paymentUrl = `upi://pay?pa=${upiID}&pn=GameZ&am=${price}&cu=INR`;
+
+        QRCode.toCanvas(document.getElementById("qrcode"), paymentUrl, function (error) {
+            if (error) console.error(error);
+        });
+
+     
+        document.getElementById("confirmPaymentBtn").addEventListener("click", function () {
+            document.getElementById("paymentStatus").style.display = "block";
+            document.getElementById("downloadReceiptBtn").style.display = "inline-block";
+        });
+
+        
+        document.getElementById("downloadReceiptBtn").addEventListener("click", function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+           
+            doc.setFontSize(18);
+            doc.text("GameZ - Payment Receipt", 20, 20);
+
+            doc.setFontSize(12);
+            doc.text(`Game: ${game}`, 20, 40);
+            doc.text(`Price: ₹${price}`, 20, 50);
+            doc.text(`Payment Status: Successful`, 20, 60);
+            doc.text(`Transaction ID: TXN${Date.now()}`, 20, 70); // fake transaction ID
+            doc.text(`Date: ${new Date().toLocaleString()}`, 20, 80);
+
+            doc.text("Thank you for your purchase!", 20, 100);
+
+           
+            doc.save("receipt.pdf");
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - GamZ</title>
+    <link rel="stylesheet" href="sty.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Create Your GamZ Account</h2>
+        <form id="registerForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <button type="submit">Register</button> 
+            <p>Already have an account? <a href="login.html">Login</a></p>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const username = document.getElementById("username").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+            if (username && email && password && confirmPassword) {
+                if (password !== confirmPassword) {
+                    alert("Passwords do not match.");
+                } else {
+                    // Simulate successful registration
+                    alert("Registration successful! Redirecting to login page...");
+                    window.location.href = "login.html";
+                }
+            } else {
+                alert("Please fill in all fields.");
+            }
+        });
+    </script>
+</body>
+</html>
